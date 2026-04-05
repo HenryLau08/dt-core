@@ -8,8 +8,8 @@ from duckietown.dtros import DTParam, DTROS, NodeType, ParamType
 from duckietown_msgs.msg import BoolStamped, WheelsCmdStamped
 from sensor_msgs.msg import CompressedImage, CameraInfo
 
-from dt_computer_vision.camera.types import CameraModel
-from dt_computer_vision.ground_projection.types import GroundProjectionGeometry
+from dt_computer_vision.camera import CameraModel
+from dt_computer_vision.ground_projection import GroundProjector
 
 from solution.model import MLModel
 
@@ -84,8 +84,14 @@ class ObjectDetectionNode(DTROS):
         if self._camera_info_received:
             return
         try:
-            camera_model     = CameraModel.from_camera_info(msg)
-            ground_projector = GroundProjectionGeometry(camera=camera_model)
+            camera_model     = CameraModel(
+                    width=msg.width,
+                    height=msg.height,
+                    K=np.reshape(msg.K, (3, 3)),
+                    D=np.reshape(msg.D, (5,)),
+                    P=np.reshape(msg.P, (3, 4)),
+                )
+            ground_projector = GroundProjector(camera_model)
             self.model.set_ground_projector(ground_projector)
             self._camera_info_received = True
             self.log("Ground projector initialised.")

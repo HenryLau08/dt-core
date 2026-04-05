@@ -5,7 +5,7 @@ from pathlib import Path
 import onnxruntime as ort
 from dt_computer_vision.camera.types import Pixel
 
-from duckietown_messages.actuators.differential_pwm import DifferentialPWM
+from duckietown_msgs.actuators.differential_pwm import DifferentialPWM
 from solution.config import MODEL_PATH, CONF_THRESHOLD, STOP_DISTANCE, FORWARD_PWM, AVOID_PWM
 
 class MLModel:
