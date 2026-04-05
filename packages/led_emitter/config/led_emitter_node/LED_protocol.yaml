@@ -10,6 +10,7 @@ LED_protocol:
     purple: [1,0,1]
     cyan: [0,1,1]
     pink: [1,0,0.5]
+    orange: [1, 0.5, 0]
 
   frequencies:
     f1: &f1 1.9
@@ -45,7 +46,7 @@ LED_protocol:
 
     CAR_DRIVING:
       color_mask: []
-      color_list: ["white","red","white","red","white"]
+      color_list: ["orange","red","white","red","orange"]
       frequency_mask: []
       frequency:  0
 

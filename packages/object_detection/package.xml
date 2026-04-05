@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package>
+  <name>object_detection</name>
+  <version>1.0.0</version>
+  <description>
+    ONNX-based duckie object detection node for dt-core.
+    Subscribes to the camera image, runs a YOLOv11 model, and publishes
+    wheel commands and a BoolStamped detection flag.
+  </description>
+
+  <maintainer email="henrylau0804@gmail.com">ADSAI</maintainer>
+  <license>GPLv3</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>duckietown_msgs</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>cv_bridge</build_depend>
+
+  <run_depend>duckietown_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>cv_bridge</run_depend>
+
+  <!--
+    Python runtime dependencies (must be present in the Docker image):
+      onnxruntime  — ONNX inference engine
+      numpy        — already a transitive dep of dt-core
+    Add to dt-core/dependencies-py3.txt:
+      onnxruntime>=1.17.0
+  -->
+</package>

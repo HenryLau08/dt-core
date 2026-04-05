@@ -24,3 +24,9 @@ git+https://github.com/duckietown/lib-dt-computer-vision.git@ente
 git+https://github.com/duckietown/lib-dt-state-estimation.git@ente
 lib-dt-modeling==0.0.5
 lib-dt-motion-planning==0.0.1
+
+# Object detection — ONNX inference engine
+# Pinned to 1.16.3: last release with cp38 Linux wheels that does NOT
+# require numpy>=1.21.6, keeping it compatible with lib-dt-modeling==0.0.5
+# (which pins numpy<=1.21.5). Versions >=1.17.0,<1.20.0 need numpy>=1.21.6
+# and >=1.20.0 dropped cp38 wheels entirely.

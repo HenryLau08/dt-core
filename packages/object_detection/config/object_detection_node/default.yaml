@@ -1,0 +1,7 @@
+# Parameters for object_detection_node
+# These values can be overridden per-robot by creating
+# config/object_detection_node/<robot_name>.yaml
+
+conf_threshold: 0.5   # minimum ONNX detection confidence score
+stop_distance:  0.5   # metres — stop when duckie is closer than this
+forward_pwm:    0.4   # PWM for straight-line lane following

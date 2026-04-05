@@ -1,0 +1,80 @@
+version: 1.0
+scripts:
+  map_0/duckie_0:
+    scripts:
+      - straight_line_script
+  map_0/duckie_1:
+    scripts:
+      - straight_line_script
+  map_0/duckie_2:
+    scripts:
+      - straight_line_script
+  map_0/duckie_3:
+    scripts:
+      - straight_line_script
+  map_0/duckie_4:
+    scripts:
+      - straight_line_script
+  map_0/duckie_5:
+    scripts:
+      - straight_line_script
+  map_0/duckie_6:
+    scripts:
+      - straight_line_script
+  map_0/duckie_7:
+    scripts:
+      - straight_line_script
+  map_0/duckie_8:
+    scripts:
+      - straight_line_script
+  map_0/duckie_9:
+    scripts:
+      - straight_line_script
+  map_0/duckie_10:
+    scripts:
+      - straight_line_script
+  map_0/duckie_11:
+    scripts:
+      - straight_line_script
+  map_0/duckie_12:
+    scripts:
+      - straight_line_script
+  map_0/duckie_13:
+    scripts:
+      - straight_line_script
+  map_0/duckie_14:
+    scripts:
+      - straight_line_script
+  map_0/duckie_15:
+    scripts:
+      - straight_line_script
+  map_0/duckie_16:
+    scripts:
+      - straight_line_script
+  map_0/duckie_17:
+    scripts:
+      - straight_line_script
+  map_0/duckie_18:
+    scripts:
+      - straight_line_script
+  map_0/duckie_19:
+    scripts:
+      - straight_line_script
+  map_0/duckie_20:
+    scripts:
+      - straight_line_script
+  map_0/duckie_21:
+    scripts:
+      - straight_line_script
+  map_0/duckie_22:
+    scripts:
+      - straight_line_script
+  map_0/duckie_23:
+    scripts:
+      - straight_line_script
+  map_0/duckie_24:
+    scripts:
+      - straight_line_script
+  map_0/duckie_25:
+    scripts:
+      - straight_line_script

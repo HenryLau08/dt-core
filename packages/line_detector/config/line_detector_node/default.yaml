@@ -8,10 +8,10 @@ colors:
     low_2: [165,140,100]
     high_2: [180,255,255]
   WHITE:
-    low: [0,0,150]
+    low: [0,0,205]
     high: [180,100,255]
   YELLOW:
-    low: [25,140,100]
+    low: [25,50,100]
     high: [45,255,255]
 
 line_detector_parameters:

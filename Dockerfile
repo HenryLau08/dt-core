@@ -77,6 +77,7 @@ ARG PIP_INDEX_URL="https://pypi.org/simple"
 ENV PIP_INDEX_URL=${PIP_INDEX_URL}
 COPY ./dependencies-py3.* "${PROJECT_PATH}/"
 RUN dt-pip3-install "${PROJECT_PATH}/dependencies-py3.*"
+RUN pip3 install --no-deps onnxruntime==1.16.3
 
 # copy the source code
 COPY ./packages "${PROJECT_PATH}/packages"
