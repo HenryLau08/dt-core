@@ -5,8 +5,16 @@ from pathlib import Path
 import onnxruntime as ort
 from dt_computer_vision.camera.types import Pixel
 
-from duckietown_msgs.actuators.differential_pwm import DifferentialPWM
+from dataclasses import dataclass
 from solution.config import MODEL_PATH, CONF_THRESHOLD, STOP_DISTANCE, FORWARD_PWM, AVOID_PWM
+
+
+@dataclass
+class DifferentialPWM:
+    """Minimal stand-in for duckietown_messages.actuators.DifferentialPWM.
+    Only left/right PWM values are needed by this package."""
+    left: float
+    right: float
 
 class MLModel:
     def __init__(self):

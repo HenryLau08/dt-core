@@ -1,7 +1,15 @@
-# Parameters for object_detection_node
-# These values can be overridden per-robot by creating
-# config/object_detection_node/<robot_name>.yaml
 
-conf_threshold: 0.5   # minimum ONNX detection confidence score
-stop_distance:  0.5   # metres — stop when duckie is closer than this
-forward_pwm:    0.4   # PWM for straight-line lane following
+# conf_threshold: minimum ONNX detection confidence score to act on
+conf_threshold: 0.5
+ 
+# stop_line_threshold: fraction of image height (0.0-1.0).
+# A detection whose bounding box bottom-edge is BELOW this line triggers a stop.
+# Image is 480px tall. Examples:
+#   0.70 → threshold at 336px  (duckie must be in lower 30% = fairly close)
+#   0.80 → threshold at 384px  (duckie must be in lower 20% = quite close)
+#   0.60 → threshold at 288px  (duckie in lower 40% = more cautious, stops earlier)
+# From the logs: bbox_bottom ~217-250 when duckie is still far (top half of frame).
+# bbox_bottom ~370-480 when duckie is very close (filling bottom of frame).
+# Set to 0.65 so the bot stops when the duckie is in the lower 35%.
+stop_line_threshold: 0.60
+ 

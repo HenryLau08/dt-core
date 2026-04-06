@@ -13,8 +13,8 @@
 
         <!-- Finite state machine -->
         <arg name="fsm"              value="true"/>
-        <arg name="fsm_file_name"    value="lane_following"/>
-        <arg name="fsm/logic_gate"  value="false"/>
+        <arg name="fsm_file_name"    value="lane_following_object_detection"/>
+        <arg name="/fsm/logic_gate"  value="false"/>
 
         <!-- Camera and anti-instagram -->
         <arg name="anti_instagram"   value="true"/>

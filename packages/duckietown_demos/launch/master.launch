@@ -295,10 +295,10 @@
         <!-- Wire camera feed into the node -->
         <remap from="object_detection_node/image/compressed" to="$(arg camera_topic)/image/compressed"/>
         <remap from="object_detection_node/camera_info"      to="$(arg camera_topic)/camera_info"/>
-        <!-- Wire wheel commands to the wheels driver -->
-        <remap from="object_detection_node/wheels_cmd"       to="wheels_driver_node/wheels_cmd"/>
-        <!-- Wire detection flag into the road anomaly watcher so the FSM sees it as a virtual stop line -->
-        <remap from="object_detection_node/object_detected"  to="road_anomaly_watcher/obstacle_exists"/>
+        <!-- NOTE: object_detection_node/object_detected is NOT remapped.
+             The FSM subscribes to it directly via the events config:
+               topic: "object_detection_node/object_detected"
+             Remapping it to road_anomaly_watcher would hide it from the FSM. -->
         <include file="$(find object_detection)/launch/object_detection_node.launch">
             <arg name="veh" value="$(arg veh)"/>
         </include>

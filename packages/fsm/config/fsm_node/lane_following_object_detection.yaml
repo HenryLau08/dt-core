@@ -1,0 +1,91 @@
+# FSM configuration for lane_following_object_detection
+# Mirrors lane_following.yaml but adds OBJECT_DETECTED stop state
+# triggered by the object_detection_node publishing BoolStamped on ~object_detected.
+#
+# Topic remapping in master.launch wires:
+#   object_detection_node/object_detected → road_anomaly_watcher/obstacle_exists
+# The FSM listens directly to the node's namespaced topic, so we reference
+# the relative topic name that the FSM node will resolve under the vehicle namespace.
+
+initial_state: "NORMAL_JOYSTICK_CONTROL"
+
+events:
+  joystick_override_on:
+    topic: "joy_mapper_node/joystick_override"
+    msg_type: "BoolStamped"
+    trigger: True
+
+  joystick_override_off:
+    topic: "joy_mapper_node/joystick_override"
+    msg_type: "BoolStamped"
+    trigger: False
+
+  # Fired when object_detection_node sees a duckie closer than stop_distance
+  object_detected:
+    topic: "object_detection_node/object_detected"
+    msg_type: "BoolStamped"
+    trigger: True
+
+  # Fired when object_detection_node no longer sees a duckie
+  object_cleared:
+    topic: "object_detection_node/object_detected"
+    msg_type: "BoolStamped"
+    trigger: False
+
+nodes:
+  anti_instagram:         "anti_instagram_node/switch"
+  line_detector_node:     "line_detector_node/switch"
+  lane_filter_node:       "lane_filter_node/switch"
+  ground_projection_node: "ground_projection_node/switch"
+  lane_controller_node:   "lane_controller_node/switch"
+  led_emitter_node:       "led_emitter_node/switch"
+  object_detection_node:  "object_detection_node/switch"
+
+global_transitions:
+  joystick_override_on:  "NORMAL_JOYSTICK_CONTROL"
+  joystick_override_off: "LANE_FOLLOWING"
+
+states:
+  NORMAL_JOYSTICK_CONTROL:
+    active_nodes:
+      - anti_instagram
+      - lane_filter_node
+      - line_detector_node
+      - ground_projection_node
+      - led_emitter_node
+      - object_detection_node
+    lights: "GREEN"
+    transitions:
+      # Allow detection to work in joystick mode too, but don't auto-stop
+      # (driver is in control). Remove these two lines if you want joystick
+      # mode to be completely unaffected by detections.
+      object_detected: "NORMAL_JOYSTICK_CONTROL"
+      object_cleared:  "NORMAL_JOYSTICK_CONTROL"
+
+  LANE_FOLLOWING:
+    active_nodes:
+      - anti_instagram
+      - line_detector_node
+      - lane_filter_node
+      - ground_projection_node
+      - lane_controller_node
+      - led_emitter_node
+      - object_detection_node
+    lights: "CAR_DRIVING"
+    transitions:
+      object_detected: "OBJECT_DETECTED"
+
+  OBJECT_DETECTED:
+    # Lane controller is OFF → wheels stop being commanded → bot coasts to halt.
+    # object_detection_node stays ON so we keep watching.
+    # LED emitter stays ON for hazard lights.
+    active_nodes:
+      - anti_instagram
+      - line_detector_node
+      - lane_filter_node
+      - ground_projection_node
+      - led_emitter_node
+      - object_detection_node
+    lights: "OBSTACLE_ALERT"
+    transitions:
+      object_cleared: "LANE_FOLLOWING"

@@ -1,11 +1,18 @@
 import numpy as np
 import onnxruntime as ort
 from dt_computer_vision.camera.types import Pixel
-from duckietown_messages.actuators.differential_pwm import DifferentialPWM
+from dataclasses import dataclass
 from solution.config import (
     MODEL_PATH, CONF_THRESHOLD, STOP_DISTANCE,
     FORWARD_PWM, AVOID_PWM,
 )
+
+
+@dataclass
+class DifferentialPWM:
+    """Minimal stand-in for duckietown_messages.actuators.DifferentialPWM."""
+    left: float
+    right: float
 
 # ── Timing ───────────────────────────────────────────────────────────────────
 AVOID_DURATION  = 0.6   # s: hoe lang uitwijken duurt
