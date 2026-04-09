@@ -1,11 +1,6 @@
-# FSM configuration for lane_following_object_detection
-# Mirrors lane_following.yaml but adds OBJECT_DETECTED stop state
-# triggered by the object_detection_node publishing BoolStamped on ~object_detected.
-#
-# Topic remapping in master.launch wires:
-#   object_detection_node/object_detected → road_anomaly_watcher/obstacle_exists
-# The FSM listens directly to the node's namespaced topic, so we reference
-# the relative topic name that the FSM node will resolve under the vehicle namespace.
+# FSM for lane_following_object_detection
+# Adds OBJECT_DETECTED (wait/stop) and AVOIDING (active avoidance manoeuvre)
+# on top of the standard lane_following FSM.
 
 initial_state: "NORMAL_JOYSTICK_CONTROL"
 
@@ -20,17 +15,20 @@ events:
     msg_type: "BoolStamped"
     trigger: False
 
-  # Fired when object_detection_node sees a duckie closer than stop_distance
   object_detected:
     topic: "object_detection_node/object_detected"
     msg_type: "BoolStamped"
     trigger: True
 
-  # Fired when object_detection_node no longer sees a duckie
   object_cleared:
     topic: "object_detection_node/object_detected"
     msg_type: "BoolStamped"
     trigger: False
+
+  avoidance_done:
+    topic: "object_detection_node/avoidance_done"
+    msg_type: "BoolStamped"
+    trigger: True
 
 nodes:
   anti_instagram:         "anti_instagram_node/switch"
@@ -55,12 +53,6 @@ states:
       - led_emitter_node
       - object_detection_node
     lights: "GREEN"
-    transitions:
-      # Allow detection to work in joystick mode too, but don't auto-stop
-      # (driver is in control). Remove these two lines if you want joystick
-      # mode to be completely unaffected by detections.
-      object_detected: "NORMAL_JOYSTICK_CONTROL"
-      object_cleared:  "NORMAL_JOYSTICK_CONTROL"
 
   LANE_FOLLOWING:
     active_nodes:
@@ -76,9 +68,10 @@ states:
       object_detected: "OBJECT_DETECTED"
 
   OBJECT_DETECTED:
-    # Lane controller is OFF → wheels stop being commanded → bot coasts to halt.
-    # object_detection_node stays ON so we keep watching.
-    # LED emitter stays ON for hazard lights.
+    # lane_controller_node is OFF → wheels stop being commanded → bot stops.
+    # object_detection_node stays ON: it counts patience and triggers avoidance.
+    # When patience expires, the node publishes object_detected=False (clearing
+    # this state) and directly drives the wheels for the avoidance manoeuvre.
     active_nodes:
       - anti_instagram
       - line_detector_node
@@ -88,4 +81,26 @@ states:
       - object_detection_node
     lights: "OBSTACLE_ALERT"
     transitions:
-      object_cleared: "LANE_FOLLOWING"
+      object_cleared:  "LANE_FOLLOWING"   # duckie walked away on its own
+      avoidance_done:  "LANE_FOLLOWING"   # avoidance manoeuvre completed
+
+  AVOIDING:
+    # During avoidance the object_detection_node drives the wheels directly
+    # via ~wheels_cmd (remapped to wheels_driver_node/wheels_cmd in master.launch).
+    # lane_controller_node is OFF so it doesn't interfere.
+    # This state is entered implicitly: when the node publishes object_detected=False
+    # from OBJECT_DETECTED the FSM returns to LANE_FOLLOWING, but the node is
+    # simultaneously publishing wheel commands for the manoeuvre. LANE_FOLLOWING
+    # has lane_controller OFF until the mode propagates, which gives the node
+    # exclusive wheel control for the duration of the manoeuvre.
+    # avoidance_done brings us cleanly back.
+    active_nodes:
+      - anti_instagram
+      - line_detector_node
+      - lane_filter_node
+      - ground_projection_node
+      - led_emitter_node
+      - object_detection_node
+    lights: "CAR_DRIVING"
+    transitions:
+      avoidance_done: "LANE_FOLLOWING"

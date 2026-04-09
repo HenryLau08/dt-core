@@ -1,15 +1,33 @@
-
-# conf_threshold: minimum ONNX detection confidence score to act on
+# ── Detection ──────────────────────────────────────────────────────────────────
+# Minimum ONNX confidence score to act on a detection
 conf_threshold: 0.5
- 
-# stop_line_threshold: fraction of image height (0.0-1.0).
-# A detection whose bounding box bottom-edge is BELOW this line triggers a stop.
-# Image is 480px tall. Examples:
-#   0.70 → threshold at 336px  (duckie must be in lower 30% = fairly close)
-#   0.80 → threshold at 384px  (duckie must be in lower 20% = quite close)
-#   0.60 → threshold at 288px  (duckie in lower 40% = more cautious, stops earlier)
-# From the logs: bbox_bottom ~217-250 when duckie is still far (top half of frame).
-# bbox_bottom ~370-480 when duckie is very close (filling bottom of frame).
-# Set to 0.65 so the bot stops when the duckie is in the lower 35%.
-stop_line_threshold: 0.60
- 
+
+# Fraction of image height. Detections whose bbox bottom-edge is BELOW this
+# line are considered "close enough to stop for".
+# Image is 480px. 0.65 → threshold at 312px (lower 35% of frame).
+# Raise to stop later/closer, lower to stop earlier/further away.
+stop_line_threshold: 0.65
+
+# ── Patience before avoidance ──────────────────────────────────────────────────
+# How many seconds to wait at a stopped duckie before attempting to avoid it
+patience_secs: 3.0
+
+# ── Avoidance manoeuvre timing ─────────────────────────────────────────────────
+# Phase 1: seconds of steering away from the duckie
+avoid_steer_secs: 1.2
+
+# Phase 2: seconds of driving straight past the duckie
+avoid_fwd_secs: 1.5
+
+# Phase 3: seconds of steering back toward the lane centre
+avoid_return_secs: 1.0
+
+# ── Avoidance PWM values ───────────────────────────────────────────────────────
+# Wheel speed of the fast (outer) wheel during steering phases
+avoid_pwm_fast: 0.35
+
+# Wheel speed of the slow (inner) wheel during steering phases
+avoid_pwm_slow: 0.15
+
+# Both-wheel speed during the straight-past phase
+avoid_pwm_fwd: 0.30

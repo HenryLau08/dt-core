@@ -18,6 +18,7 @@
 	<arg name="ai_trafo_mode" default="cb" doc="'cb' for colo balance only; 'both' for color balance and linear trafo"/>
 	<arg name="ai_interval" default="5" doc="interval with which the linear trafo gets updated. color balance is performed every second."/>
 	<arg name="line_detector_param_file_name" default="$(arg param_file_name)"/>
+    <arg name="lane_controller_param_file_name" default="$(arg param_file_name)"/>
 	<arg name="intersectionType" default= "stopSign"/>
     <!-- end args -->
 
@@ -208,7 +209,7 @@
             <remap from="wheels_driver_node/radius_limit" to="lane_controller_node/radius_limit" />
             <include file="$(find lane_control)/launch/lane_controller_node.launch">
                 <arg name="veh" value="$(arg veh)"/>
-                <arg name="param_file_name" value="$(arg param_file_name)"/>
+                <arg name="param_file_name" value="$(arg lane_controller_param_file_name)"/>
             </include>
         </group>
 
@@ -292,13 +293,15 @@
 
     <!-- Start Object Detection (ONNX/YOLO duckie detector) -->
     <group if="$(arg object_detection)">
-        <!-- Wire camera feed into the node -->
+        <!-- Camera feed -->
         <remap from="object_detection_node/image/compressed" to="$(arg camera_topic)/image/compressed"/>
         <remap from="object_detection_node/camera_info"      to="$(arg camera_topic)/camera_info"/>
+        <!-- FSM mode → node knows which state it's in -->
+        <remap from="object_detection_node/mode"             to="fsm_node/mode"/>
+        <!-- Avoidance wheel commands → direct to wheels driver -->
+        <remap from="object_detection_node/wheels_cmd"       to="wheels_driver_node/wheels_cmd"/>
         <!-- NOTE: object_detection_node/object_detected is NOT remapped.
-             The FSM subscribes to it directly via the events config:
-               topic: "object_detection_node/object_detected"
-             Remapping it to road_anomaly_watcher would hide it from the FSM. -->
+             The FSM subscribes to it directly via the events config. -->
         <include file="$(find object_detection)/launch/object_detection_node.launch">
             <arg name="veh" value="$(arg veh)"/>
         </include>

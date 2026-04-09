@@ -26,7 +26,7 @@ class MLModel:
 
         sess_opts = ort.SessionOptions()
         sess_opts.intra_op_num_threads = 1
-
+        sess_opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         self.session = ort.InferenceSession(
             str(MODEL_PATH),
             sess_options=sess_opts,
